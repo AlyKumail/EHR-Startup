@@ -84,6 +84,49 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+// Login User
+const loginUser = asyncHandler(async (req, res) => {
+  console.log("loginuser");
+  const { email, password } = req.body;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email: email,
+    },
+  });
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.status(200);
+
+    res.json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid credential");
+  }
+
+  console.log(user);
+  res.json({ message: "Hii" });
+});
+
+// Get User
+const getUser = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+  console.log(id);
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: parseInt(id),
+    },
+  });
+  console.log(user);
+  res.status(200).json(user);
+});
+
 // Generate JWT
 
 const generateToken = (id) => {
@@ -94,6 +137,6 @@ const generateToken = (id) => {
 
 module.exports = {
   registerUser,
-  // loginUser,
-  // getMe,
+  loginUser,
+  getUser,
 };

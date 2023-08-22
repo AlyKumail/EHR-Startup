@@ -5,12 +5,12 @@ const router = express.Router();
 
 const {
   registerUser,
-  //   loginUser,
-  //   getUser,
+  loginUser,
+  getUser,
 } = require("../controllers/userController");
 
 router.post("/", registerUser);
-// router.post("/login", loginUser);
-// router.get("/me", protect, getMe);
+router.post("/login", loginUser);
+router.get("/getUser", getUser);
 
 module.exports = router;
